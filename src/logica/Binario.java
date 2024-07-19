@@ -1,5 +1,5 @@
 
-package conversiondenumeros;
+package logica;
 
 
 /**
@@ -27,7 +27,7 @@ public class Binario {
         if (nDigitos(num) > 0) {            
             this.num = num;
         } else{
-            System.out.println("Numero invalido");
+//            System.out.println("Numero invalido");
         }
     }
 
@@ -35,7 +35,7 @@ public class Binario {
         if (base == 8 || base == 10 || base == 16) {
             this.base = base;
         } else{         
-            System.out.println("Base incorrecta");
+//            System.out.println("Base incorrecta");
             this.base = 0;
         }
     }
@@ -58,35 +58,35 @@ public class Binario {
                 suma += multi;
             }
             if (base == 10) {
-                System.out.println("El numero Binario " + num + "\nEn su equivalente Decimal es: " + suma);
+//                System.out.println("El numero Binario " + num + "\nEn su equivalente Decimal es: " + suma);
             }
             num = suma;
         }
     }
 
     
-    public void binarioAOctal(){
-        
-        if (base == 8) {  
-            System.out.println("El numero Binario "+num);
-            binarioADecimal();
-            dl = new Decimal(num, base); 
-            System.out.print("En su equivalente Octal es: ");
-            dl.decimalABinarioUOctal();
-        }
-    }
-    
-    public void binarioAHexadecimal() {
-        
-        if (base == 16) {
-            System.out.println("El numero Binario "+num);
-            binarioADecimal();
-            dl = new Decimal(num, base);
-            System.out.print("En su equivalente Hexadecimal es: ");
-            dl.decimalAHexadecimal();
-        }
-    }
-    
+//    public void binarioAOctal(){
+//        
+//        if (base == 8) {  
+////            System.out.println("El numero Binario "+num);
+//            binarioADecimal();
+//            dl = new Decimal(num, base); 
+////            System.out.print("En su equivalente Octal es: ");
+//            dl.decimalABinarioUOctal();
+//        }
+//    }
+//    
+//    public void binarioAHexadecimal() {
+//        
+//        if (base == 16) {
+////            System.out.println("El numero Binario "+num);
+//            binarioADecimal();
+//            dl = new Decimal(num, base);
+////            System.out.print("En su equivalente Hexadecimal es: ");
+//            dl.decimalAHexadecimal();
+//        }
+//    }
+//    
     // falta confirmar que el numero agregado si sea binario
     public int nDigitos(int nume){
         int copiaNumero= nume, contCifras = 0, resto;        

@@ -1,5 +1,5 @@
 
-package conversiondenumeros;
+package logica;
 
 /**
  *
