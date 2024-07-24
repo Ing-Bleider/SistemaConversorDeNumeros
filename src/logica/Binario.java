@@ -2,103 +2,76 @@
 package logica;
 
 
+
 /**
  *
  * @author Bleider Hernandez
  */
 public class Binario {
 
-    Decimal dl;
-    
-    private int num;
-    private int base;
-    private int conversion[];
+    private Decimal dl;    
+    private String num;
+    private SeleccionDeSistema sistema;
 
     public Binario() {
     }
 
-    public Binario(int num, int base) {
+    public Binario(String num, SeleccionDeSistema sistema) {
         setNum(num);
-        setBase(base);
-        this.conversion = new int[nDigitos(num)];
+        this.sistema = sistema;
     }
 
-    public void setNum(int num) {        
-        if (nDigitos(num) > 0) {            
+    public void setNum(String num) {        
+        if (num !=  null) {            
             this.num = num;
         } else{
 //            System.out.println("Numero invalido");
         }
     }
 
-    public void setBase(int base) {
-        if (base == 8 || base == 10 || base == 16) {
-            this.base = base;
-        } else{         
-//            System.out.println("Base incorrecta");
-            this.base = 0;
-        }
-    }
-
     // Conversiones 
     
-    
-    public void binarioADecimal() {
-        int resto, divEntera = num, potencia, multi, suma = 0;
-        if (num> 0) {
-            for (int i = 0; i < conversion.length; i++) {
-                resto = divEntera % 10;
-                divEntera = divEntera / 10;
-                conversion[i] = resto;
+    public String binarioADecimal() {
+        int digito, potencia, multip, suma = 0;
+        
+        if (num != null) {
+            for (int i = 0; i < num.length(); i++) {
+                digito = Character.getNumericValue(num.charAt(i));
+//              Si conversion.lenght = 12 || 12-1-0, 12-1-1, 12-1-2, 12-1,3, 12-1-4 ...              
+                potencia = (int)Math.pow(2, (num.length() -1 -i));
+                multip = digito * potencia;
+                suma += multip;
             }
-
-            for (int i = 0; i < conversion.length; i++) {
-                potencia = (int) Math.pow(2, i);
-                multi = conversion[i] * potencia;
-                suma += multi;
-            }
-            if (base == 10) {
-//                System.out.println("El numero Binario " + num + "\nEn su equivalente Decimal es: " + suma);
-            }
-            num = suma;
+            num = String.valueOf(suma);
         }
+        
+        return num;
+    }
+    
+    public String binarioAOctal(){
+        String binOctal = "";
+        if (sistema == SeleccionDeSistema.OCTAL) {  
+            binarioADecimal();
+            dl = new Decimal(Integer.parseInt(num), sistema); 
+           binOctal = dl.decimalABinarioUOctal();
+        }
+        return binOctal;
+    }
+    
+    public String binarioAHexadecimal() {
+        String binHexa = "";
+        if (sistema == SeleccionDeSistema.HEXADECIMAL) {
+            binarioADecimal();
+            dl = new Decimal(Integer.parseInt(num), sistema);
+            binHexa = dl.decimalAHexadecimal();
+        }
+        return  binHexa;
     }
 
-    
-//    public void binarioAOctal(){
-//        
-//        if (base == 8) {  
-////            System.out.println("El numero Binario "+num);
-//            binarioADecimal();
-//            dl = new Decimal(num, base); 
-////            System.out.print("En su equivalente Octal es: ");
-//            dl.decimalABinarioUOctal();
-//        }
-//    }
-//    
-//    public void binarioAHexadecimal() {
-//        
-//        if (base == 16) {
-////            System.out.println("El numero Binario "+num);
-//            binarioADecimal();
-//            dl = new Decimal(num, base);
-////            System.out.print("En su equivalente Hexadecimal es: ");
-//            dl.decimalAHexadecimal();
-//        }
-//    }
-//    
-    // falta confirmar que el numero agregado si sea binario
-    public int nDigitos(int nume){
-        int copiaNumero= nume, contCifras = 0, resto;        
-        while (copiaNumero > 0) {
-            resto = copiaNumero % 10;
-            copiaNumero = copiaNumero / 10;
-            if (resto != 0 && resto != 1) {
-                contCifras = 0;
-                break;
-            }
-            contCifras ++;
-        }       
-        return contCifras;
+    @Override
+    public String toString() {
+        return "Binario{" + "num=" + num + ", sistema=" + sistema + '}';
     }
+
+  
 }

@@ -1,6 +1,8 @@
 
 package logica;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Bleider Hernandez
@@ -8,17 +10,17 @@ package logica;
 public class Hexadecimal {
 
     
-    Decimal dl;
+    private Decimal dl;
     private String numero;
-    private int base;
+    private SeleccionDeSistema sistema;
     private char numHexa[];
     
     
     public Hexadecimal(){}
     
-    public Hexadecimal(String numero, int base){
+    public Hexadecimal(String numero, SeleccionDeSistema sistema){
         setNumero(numero);
-        setBase(base);
+        this.sistema = sistema;
         this.numHexa = new char[this.numero.length()];
     }
 
@@ -26,20 +28,10 @@ public class Hexadecimal {
         if (validarNumero(numero).length() > 0) {
             this.numero = numero;
         }else{
-            System.out.println("El valor no es Hexadecimal");
+//            System.out.println("El valor no es Hexadecimal");
             this.numero = "";
         }
     }
-    
-    public void setBase(int base) {
-        if (base == 2 || base == 8 || base == 10){
-            this.base = base;
-        }else{
-            System.out.println("Base incorrecta");
-            this.base = 0;
-        }
-    }
-    
     
     // conversiones
     private String validarNumero(String n) {
@@ -59,27 +51,30 @@ public class Hexadecimal {
     private void asignarValores(){
         if (numHexa.length > 0) {
             for (int i = 0; i < numHexa.length; i++) {
-                numHexa[i] = numero.charAt(numero.length() - i - 1);
+                numHexa[i] = numero.charAt(numero.length() - 1 - i);
             }
         }
     }
     
-    private void conversionABinarioUOctal() {
-        if (base == 2 || base == 8) {
+    private String conversionABinarioUOctal() {
+        String resul = "";
+        if (sistema == SeleccionDeSistema.BINARIO || sistema == SeleccionDeSistema.OCTAL) {
             int guardarValor[] = new int[nIteraciones()];
             int num = conversionADecimal();
             // sacamos la division entera y el residuo para obtener el resultado
                     
             for (int i = guardarValor.length - 1; i >= 0; i--) {
-                guardarValor[i] = num % base;
-                num = num / base;
+                guardarValor[i] = num % sistema.getBase();
+                num = num / sistema.getBase();
             }
             // Mostrar resultado            
             for (int j = 0; j < guardarValor.length; j++) {
-                System.out.print(guardarValor[j]);
+//                System.out.print(guardarValor[j]);
+                resul += String.valueOf(guardarValor[j]);
             }
-            System.out.println();
+//            System.out.println("");
         }
+        return resul;
     }
     
     private int conversionADecimal() {
@@ -109,24 +104,28 @@ public class Hexadecimal {
         return resultado;
     }    
    
-    public void hexadecimalABinario() {
-        if (numHexa.length > 0 && base == 2) {
-            System.out.print("El numero Hexadecimal " + numero + "\nEn su equivalente Binario, es: ");
-            conversionABinarioUOctal();
+    public String hexadecimalABinario() {
+        String resultado = "";
+        if (numHexa.length > 0 && sistema == SeleccionDeSistema.BINARIO) {
+            resultado = conversionABinarioUOctal();
         }
+        return resultado;
     }
     
-    public void hexadecimalADecimal(){
-        if (numHexa.length > 0 && base == 10) {
-            System.out.println("El numero Hexadecimal "+numero+"\nEn su equivalente Decimal, es: "+conversionADecimal());
-        }       
+    public String hexadecimalADecimal(){
+        String result= "";
+        if (numHexa.length > 0 && sistema == SeleccionDeSistema.DECIMAL) {
+            result = String.valueOf(conversionADecimal());
+        } 
+        return result;
     }
     
-    public void hexadecimalAOctal() {
-        if (numHexa.length > 0 && base == 8) {
-            System.out.print("El numero Hexadecimal " + numero + "\nEn su equivalente Octal, es: ");
-            conversionABinarioUOctal();
+    public String hexadecimalAOctal() {
+        String resultado = "";
+        if (numHexa.length > 0 && sistema == SeleccionDeSistema.OCTAL) {
+            resultado = conversionABinarioUOctal();
         }
+        return resultado;
     }
     
  
@@ -134,15 +133,21 @@ public class Hexadecimal {
         int division = conversionADecimal();
         int iteraciones = 0;
 
-        if (base != 0) {
+        if (sistema.getBase() != 0) {
             while (division > 0) {
-                division = division / base;
+                division = division / sistema.getBase();
                 iteraciones++;
             }
         }
 
         return iteraciones;
     }
+
+    @Override
+    public String toString() {
+        return "Hexadecimal{" + "numero=" + numero + ", sistema=" + sistema + ", numHexa=" + Arrays.toString(numHexa) + '}';
+    }
+    
     
     
 }

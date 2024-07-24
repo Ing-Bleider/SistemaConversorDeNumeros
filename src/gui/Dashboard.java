@@ -1,10 +1,25 @@
 
 package gui;
 
+import java.awt.event.KeyEvent;
+import javax.swing.JComboBox;
+import logica.Binario;
+import logica.Decimal;
+import logica.Hexadecimal;
+import logica.Octal;
+import logica.SeleccionDeSistema;
+
 /**
  * @author Bleider Hernandez
  */
 public class Dashboard extends javax.swing.JFrame {
+        
+    private Binario bin;
+    private Octal oct;
+    private Decimal dec;
+    private Hexadecimal hexa;
+    private boolean pasarMouse = false;
+    private String items[] ; //= new String []{"BINARIO","OCTAL","DECIMAL","HEXADECIMAL"}; 
 
     /**
      * Creates new form Dashboard
@@ -13,7 +28,8 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         this.setResizable(false);
         this.setLocationRelativeTo(null);
-        setTitle("Sistema de conversión");
+        setTitle("Sistema de conversión");   
+        items = new String []{"BINARIO","OCTAL","DECIMAL","HEXADECIMAL"}; 
     }
 
     /**
@@ -37,23 +53,42 @@ public class Dashboard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Seleccione numero origen");
+        jLabel1.setText("De:");
 
-        jComboOrigen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Binario", "Octal", "Decimal", "Hexadecimal" }));
+        jComboOrigen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BINARIO", "OCTAL", "DECIMAL", "HEXADECIMAL" }));
+        jComboOrigen.setSelectedIndex(-1);
+        jComboOrigen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboOrigenActionPerformed(evt);
+            }
+        });
 
-        jLabel2.setText("Seleccione numero a convertir");
+        jLabel2.setText("A:");
 
-        jComboDestino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Binario", "Octal", "Decimal", "Hexadecimal" }));
+        jComboDestino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BINARIO", "OCTAL", "DECIMAL", "HEXADECIMAL" }));
+        jComboDestino.setSelectedIndex(-1);
+        jComboDestino.setEnabled(false);
+        jComboDestino.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboDestinoActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Digite número:");
 
         txtIngreso.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         txtIngreso.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtIngreso.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtIngresoKeyPressed(evt);
+            }
+        });
 
         jLabel4.setText("Resultado:");
 
         txtResultado.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         txtResultado.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtResultado.setRequestFocusEnabled(false);
 
         javax.swing.GroupLayout jPanelPrincipalLayout = new javax.swing.GroupLayout(jPanelPrincipal);
         jPanelPrincipal.setLayout(jPanelPrincipalLayout);
@@ -110,6 +145,118 @@ public class Dashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jComboOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboOrigenActionPerformed
+        
+        if (jComboOrigen.getSelectedIndex() > -1) {
+            this.jComboDestino.setEnabled(true);
+            agregarItems();
+            txtIngreso.setText("");
+        }        
+    }//GEN-LAST:event_jComboOrigenActionPerformed
+ 
+    private void txtIngresoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIngresoKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            validarSistema(jComboOrigen.getSelectedIndex(), jComboDestino.getSelectedIndex());
+        }
+    }//GEN-LAST:event_txtIngresoKeyPressed
+
+    private void jComboDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboDestinoActionPerformed
+        // TODO add your handling code here:
+        if (jComboDestino.getSelectedIndex() != -1) {
+//            txtIngreso.setText("");
+            txtResultado.setText("");
+            txtIngreso.requestFocus();
+        }
+    }//GEN-LAST:event_jComboDestinoActionPerformed
+
+    private void agregarItems (){
+        jComboDestino.removeAllItems();
+        for (int i = 0; i < items.length; i++) {
+            if (jComboOrigen.getSelectedIndex() != i && jComboOrigen.getSelectedIndex() != -1) {
+                jComboDestino.addItem(items[i]);
+            }
+        }
+    }
+    
+    private void validarSistema(int indiceIn, int indiceOut){
+
+        switch (indiceIn) {
+            case 0 -> { binarioAOtrosSistemas(indiceOut); } 
+            case 1 -> { octalAOtrosSistemas(indiceOut); }
+            case 2 -> { decimalAOtrosSistemas(indiceOut); }
+            case 3 -> { hexadecimalAOtrosSistemas(indiceOut); }
+        }
+    }
+    
+    private void binarioAOtrosSistemas(int indice) {
+        switch (indice) {
+            case 0 -> {                
+                bin = new Binario(txtIngreso.getText(), SeleccionDeSistema.OCTAL);
+                txtResultado.setText(bin.binarioAOctal());
+            }
+            case 1 -> {
+                bin = new Binario(txtIngreso.getText(), SeleccionDeSistema.DECIMAL);
+                txtResultado.setText(bin.binarioADecimal());
+            }
+            case 2 -> {
+                bin = new Binario(txtIngreso.getText(), SeleccionDeSistema.HEXADECIMAL);
+                txtResultado.setText(bin.binarioAHexadecimal());
+            }
+        }
+    }
+    
+    private void octalAOtrosSistemas(int indice) {
+        switch (indice) {
+            case 0 -> {                
+                oct = new Octal(Integer.parseInt(txtIngreso.getText()), SeleccionDeSistema.BINARIO);
+                txtResultado.setText(oct.octalABinario());
+            }
+            case 1 -> {
+                oct = new Octal(Integer.parseInt(txtIngreso.getText()), SeleccionDeSistema.DECIMAL);
+                txtResultado.setText(String.valueOf(oct.octalADecimal()));
+            }
+            case 2 -> {
+                oct = new Octal(Integer.parseInt(txtIngreso.getText()), SeleccionDeSistema.HEXADECIMAL);
+                txtResultado.setText(oct.octalAHexadecimal());
+            }
+        }
+    }
+    
+    private void decimalAOtrosSistemas(int indice) {
+        switch (indice) {
+            case 0 -> {                
+                dec = new Decimal(Integer.parseInt(txtIngreso.getText()), SeleccionDeSistema.BINARIO);
+                txtResultado.setText(dec.decimalABinarioUOctal());
+            }
+            case 1 -> {
+                dec = new Decimal(Integer.parseInt(txtIngreso.getText()), SeleccionDeSistema.OCTAL);
+                txtResultado.setText(dec.decimalABinarioUOctal());
+            }
+            case 2 -> {
+                dec = new Decimal(Integer.parseInt(txtIngreso.getText()), SeleccionDeSistema.HEXADECIMAL);
+                txtResultado.setText(dec.decimalAHexadecimal());
+            }
+        }
+    }
+    
+    private void hexadecimalAOtrosSistemas(int indice) {
+        switch (indice) {
+            case 0 -> {                
+                hexa = new Hexadecimal(txtIngreso.getText(), SeleccionDeSistema.BINARIO);
+                txtResultado.setText(hexa.hexadecimalABinario());
+            }
+            case 1 -> {
+                hexa = new Hexadecimal(txtIngreso.getText(), SeleccionDeSistema.OCTAL);
+                txtResultado.setText(hexa.hexadecimalAOctal());
+            }
+            case 2 -> {
+                hexa = new Hexadecimal(txtIngreso.getText(), SeleccionDeSistema.DECIMAL);
+                txtResultado.setText(hexa.hexadecimalADecimal());
+            }
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
