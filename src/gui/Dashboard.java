@@ -68,6 +68,11 @@ public class Dashboard extends javax.swing.JFrame {
         jComboDestino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BINARIO", "OCTAL", "DECIMAL", "HEXADECIMAL" }));
         jComboDestino.setSelectedIndex(-1);
         jComboDestino.setEnabled(false);
+        jComboDestino.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jComboDestinoMouseClicked(evt);
+            }
+        });
         jComboDestino.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboDestinoActionPerformed(evt);
@@ -81,6 +86,9 @@ public class Dashboard extends javax.swing.JFrame {
         txtIngreso.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtIngresoKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtIngresoKeyTyped(evt);
             }
         });
 
@@ -145,13 +153,43 @@ public class Dashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void pulsarTeclaNumerica(KeyEvent evt, int indice) {
+        //Declaramos una variable y le asignamos un evento
+        char car = evt.getKeyChar();
+        
+        switch (indice) {
+            case 0 -> {
+                if ((car < '0' || car > '1') && (car != (char) KeyEvent.VK_BACK_SPACE)) {
+                    evt.consume();
+                }
+            }            
+            case 1 -> {
+                if ((car < '0' || car > '7') && (car != (char) KeyEvent.VK_BACK_SPACE)) {
+                    evt.consume();
+                }
+            }            
+            case 2 -> {
+                if ((car < '0' || car > '9') && (car != (char) KeyEvent.VK_BACK_SPACE)) {
+                    evt.consume();
+                }
+            }            
+            case 3 -> {
+                if ((car < 'a' || car > 'f') && (car < 'A' || car > 'F') && (car < '0' || car > '9')
+                        && (car != (char) KeyEvent.VK_BACK_SPACE) && (car != (char) KeyEvent.VK_SPACE)) {
+                    evt.consume();
+                }
+            }          
+        }
+    }
+    
     private void jComboOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboOrigenActionPerformed
         
         if (jComboOrigen.getSelectedIndex() > -1) {
             this.jComboDestino.setEnabled(true);
             agregarItems();
             txtIngreso.setText("");
-        }        
+        }    
+        txtResultado.setText("");
     }//GEN-LAST:event_jComboOrigenActionPerformed
  
     private void txtIngresoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIngresoKeyPressed
@@ -164,11 +202,23 @@ public class Dashboard extends javax.swing.JFrame {
     private void jComboDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboDestinoActionPerformed
         // TODO add your handling code here:
         if (jComboDestino.getSelectedIndex() != -1) {
-//            txtIngreso.setText("");
             txtResultado.setText("");
+            if (!txtIngreso.getText().isEmpty()) {
+                validarSistema(jComboOrigen.getSelectedIndex(), jComboDestino.getSelectedIndex());
+            }
             txtIngreso.requestFocus();
         }
     }//GEN-LAST:event_jComboDestinoActionPerformed
+
+    private void txtIngresoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIngresoKeyTyped
+        // TODO add your handling code here:        
+        pulsarTeclaNumerica(evt,jComboOrigen.getSelectedIndex());        
+    }//GEN-LAST:event_txtIngresoKeyTyped
+
+    private void jComboDestinoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboDestinoMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jComboDestinoMouseClicked
 
     private void agregarItems (){
         jComboDestino.removeAllItems();
